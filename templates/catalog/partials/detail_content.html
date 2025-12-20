@@ -1,0 +1,168 @@
+<div id="view-detail" class="min-h-screen bg-black" x-data="{ 
+        activeImageIndex: 0, 
+        images: [
+            {% for img in product.images.all %}
+                '{{ img.image.url }}'{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ]
+     }">
+    <div id="product-detail-container" class="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-56px)]">
+
+        <!-- Left Side: Details -->
+        <div class="lg:col-span-4 p-8 border-r border-gray-800 overflow-y-auto">
+            <nav class="text-[9px] text-gray-500 uppercase tracking-widest mb-12">
+                <a href="{% url 'catalog:list' %}" hx-boost="true" class="hover:text-white">Catalog</a> /
+                <span class="text-white">{{ product.category.name }}</span> /
+                {{ product.name }}
+            </nav>
+
+            <div class="mb-12">
+                <h1 class="text-3xl font-light uppercase tracking-widest mb-2">{{ product.name }}</h1>
+                <p class="text-sm tracking-widest">${{ product.price }}</p>
+            </div>
+
+            <div class="mb-12">
+                <h4 class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">Specs & Details</h4>
+                <div class="text-[11px] leading-relaxed text-gray-300 space-y-4">
+                    <p>{{ product.description }}</p>
+
+                    {% if product.frame_material %}
+                    <ul class="space-y-2 mt-4">
+                        {% if product.collection %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Collection:</span> {{ product.collection }}</li>{% endif %}
+                        {% if product.frame_material %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Frame:</span> {{ product.frame_material }}</li>{% endif %}
+                        {% if product.lens_type %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Lenses:</span> {{ product.lens_type }}</li>{% endif %}
+                        {% if product.shape %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Shape:</span> {{ product.shape }}</li>{% endif %}
+                        {% if product.uv_protection %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Features:</span> {{ product.uv_protection }}</li>{% endif %}
+                        {% if product.country_of_origin %}<li class="flex items-start"><span
+                                class="mr-2 text-gray-500">Origin:</span> {{ product.country_of_origin }}</li>{% endif%}
+                    </ul>
+                    {% endif %}
+
+                    {% if product.lens_width %}
+                    <div class="mt-6 pt-6 border-t border-gray-800">
+                        <h5 class="text-[9px] uppercase tracking-widest text-gray-500 mb-2">Dimensions (mm)</h5>
+                        <div class="grid grid-cols-2 gap-2 text-[10px]">
+                            {% if product.lens_width %}<div>Lens Width: {{ product.lens_width }}</div>{% endif %}
+                            {% if product.bridge_width %}<div>Bridge: {{ product.bridge_width }}</div>{% endif %}
+                            {% if product.frame_front_width %}<div>Frame Front: {{ product.frame_front_width }}</div>
+                            {%endif %}
+                            {% if product.temple_length %}<div>Temple: {{ product.temple_length }}</div>{% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mt-20 border-t border-gray-800 flex text-[10px] uppercase tracking-widest">
+                <button class="flex-1 py-4 border-r border-gray-800 bg-white text-black font-bold">Details</button>
+                <button class="flex-1 py-4 border-r border-gray-800 hover:bg-gray-900 transition-colors">Size &
+                    Fit</button>
+            </div>
+        </div>
+
+        <!-- Center Image (Main) with Carousel Logic -->
+        <div
+            class="lg:col-span-4 relative border-r border-gray-800 bg-gray-900 overflow-hidden group flex items-center justify-center">
+
+            {% if product.images.exists %}
+            <!-- Main Image Bound to Alpine -->
+            <img :src="images[activeImageIndex]" class="w-full h-full object-cover transition-opacity duration-300"
+                alt="{{ product.name }}" />
+
+            <!-- Navigation Arrows -->
+            <button @click="activeImageIndex = (activeImageIndex === 0) ? images.length - 1 : activeImageIndex - 1"
+                class="absolute left-4 z-10 text-black hover:text-gray-600 transition-colors"
+                x-show="images.length > 1">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <button @click="activeImageIndex = (activeImageIndex === images.length - 1) ? 0 : activeImageIndex + 1"
+                class="absolute right-4 z-10 text-black hover:text-gray-600 transition-colors"
+                x-show="images.length > 1">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            {% else %}
+            <div class="w-full h-full flex items-center justify-center bg-gray-800">No Image</div>
+            {% endif %}
+        </div>
+
+        <!-- Right Side: Interaction -->
+        <div class="lg:col-span-4 flex flex-col">
+            <!-- Thumbnails Control Alpine State -->
+            <div class="flex border-b border-gray-800 overflow-x-auto no-scrollbar">
+                {% for img in product.images.all %}
+                <div class="w-1/4 flex-shrink-0 aspect-[2/3] border-r border-gray-800 bg-gray-900 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity relative"
+                    @click="activeImageIndex = {{ forloop.counter0 }}">
+                    <img src="{{ img.image.url }}" class="w-full h-full object-cover" />
+                    <!-- Active Indicator Overlay -->
+                    <div x-show="activeImageIndex === {{ forloop.counter0 }}"
+                        class="absolute inset-0 bg-white/10 pointer-events-none"></div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="p-8 flex-1 flex flex-col">
+                <form class="mb-12 mt-auto" x-data="{ 
+                          selectedSize: null, 
+                          hasSizes: {{ product.available_sizes|yesno:'true,false' }},
+                          get isReady() { return !this.hasSizes || this.selectedSize }
+                      }" hx-post="{% url 'cart:add' product.id %}" hx-target="#bag-count" hx-swap="innerHTML">
+
+                    <input type="hidden" name="size" x-model="selectedSize">
+
+                    <div class="mb-6">
+                        <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-2">Color: <span
+                                class="text-white">Silver</span></p>
+                        <div class="w-6 h-6 border border-white bg-gray-300 cursor-pointer"></div>
+                    </div>
+
+                    {% if product.available_sizes %}
+                    <div class="mb-8">
+                        <div
+                            class="flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-500 mb-4">
+                            <span class="font-bold">Select a Size:</span>
+                            <button type="button" class="underline hover:text-white">Size Guide</button>
+                        </div>
+                        <div class="flex flex-wrap gap-4 text-[11px] uppercase tracking-widest">
+                            {% for size in product.available_sizes %}
+                            <button type="button" @click="selectedSize = '{{ size }}'"
+                                :class="{ 'text-white border-b border-white': selectedSize === '{{ size }}', 'text-gray-500 hover:text-white': selectedSize !== '{{ size }}' }"
+                                class="pb-1 transition-colors">
+                                {{ size }}
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="space-y-4">
+                        <button type="submit" {% if product.stock> 0 %}
+                            :disabled="!isReady"
+                            :class="{ 'opacity-50 cursor-not-allowed': !isReady }"
+                            {% else %}disabled{% endif %}
+                            class="w-full bg-white text-black py-4 text-[11px] uppercase font-bold tracking-[0.2em]
+                            hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            {% if product.stock > 0 %}Add to Bag{% else %}Sold Out{% endif %}
+                        </button>
+                        <button type="button"
+                            class="w-full border border-gray-800 py-4 text-[11px] uppercase font-bold tracking-[0.2em] hover:bg-white hover:text-black transition-all">
+                            Add to Wishlist
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

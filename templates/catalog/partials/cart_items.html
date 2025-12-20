@@ -1,0 +1,40 @@
+<!-- Cart Items Partial -->
+<div class="space-y-8">
+    {% if cart %}
+    {% for key, item in cart.items %}
+    <div class="flex space-x-6 pb-8 border-b border-gray-900 last:border-0">
+        <div class="w-24 aspect-[2/3] bg-gray-900 overflow-hidden">
+            {% if item.image %}
+            <img src="{{ item.image }}" class="w-full h-full object-cover" />
+            {% else %}
+            <div class="w-full h-full bg-gray-800 flex items-center justify-center text-xs text-gray-600">No Image</div>
+            {% endif %}
+        </div>
+        <div class="flex-1 flex flex-col">
+            <div class="flex justify-between items-start mb-4">
+                <h3 class="text-[11px] uppercase tracking-widest leading-relaxed max-w-[150px]">
+                    {{ item.name }}
+                    {% if item.size %}
+                    <span class="block text-gray-500 mt-1">Size: {{ item.size }}</span>
+                    {% endif %}
+                </h3>
+                <p class="text-[11px] uppercase tracking-widest">${{ item.price }}</p>
+            </div>
+            <div class="mt-auto flex justify-between items-center text-[10px] uppercase tracking-widest text-gray-500">
+                <span>Qty: {{ item.quantity }}</span>
+                <button class="hover:text-white">Remove</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-center text-gray-500 text-xs uppercase tracking-widest py-10">
+        Your bag is currently empty.
+    </p>
+    {% endif %}
+</div>
+
+<!-- OOB Swaps for Counts and Subtotal -->
+<span id="cart-count" hx-swap-oob="true">{{ total_items }}</span>
+<span id="bag-count" hx-swap-oob="true">{{ total_items }}</span>
+<span id="cart-subtotal" hx-swap-oob="true">{{ total_price }}</span>

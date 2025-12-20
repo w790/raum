@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAÚM Fashion Store</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: black;
+            color: white;
+        }
+
+        .serif-font {
+            font-family: 'Georgia', serif;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            /* IE and Edge */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen">
+
+    <!-- NAVBAR -->
+    <nav
+        class="w-full bg-black border-b border-gray-800 text-[11px] font-medium uppercase tracking-[0.15em] sticky top-0 z-50">
+        <div class="flex justify-between items-center px-6 h-14">
+            <!-- Left Section: Logo -->
+            <div class="flex items-center space-x-12">
+                <button onclick="handleNavHome()" class="text-2xl font-bold tracking-tighter normal-case serif-font">
+                    RAÚM
+                </button>
+
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="handleNavShop()" class="hover:text-gray-400">Shop</button>
+                    <button class="hover:text-gray-400">Collections</button>
+                    <button class="hover:text-gray-400">About</button>
+                </div>
+            </div>
+
+            <!-- Right Section: Actions -->
+            <div class="flex items-center space-x-8">
+                <button class="hover:text-gray-400">Search</button>
+                <button onclick="toggleCart(true)" class="hover:text-gray-400 flex items-center">
+                    Bag <span class="ml-1 opacity-60">[<span id="bag-count">0</span>]</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1">
+
+        <!-- HOME VIEW -->
+        <div id="view-home" class="hidden">
+            <div class="flex flex-col items-center justify-center py-40 border-b border-gray-800">
+                <h1 class="text-[15vw] font-serif tracking-tighter mb-12 serif-font">RAÚM</h1>
+                <button onclick="handleNavShop()"
+                    class="text-xs uppercase tracking-[0.4em] border border-white px-10 py-4 hover:bg-white hover:text-black transition-all">
+                    Enter Store
+                </button>
+            </div>
+        </div>
+
+        <!-- PRODUCT LIST VIEW -->
+        <div id="view-listing" class="hidden min-h-screen">
+            <div class="px-6 py-8 border-b border-gray-800">
+                <h2 class="text-2xl font-light uppercase tracking-widest">All Clothing</h2>
+            </div>
+
+            <div
+                class="px-6 py-4 flex justify-between items-center text-[10px] uppercase tracking-widest border-b border-gray-800">
+                <div class="flex space-x-6" id="category-filters">
+                    <!-- Filters injected here -->
+                </div>
+                <button class="flex items-center space-x-1">
+                    <span>Filter & Sort</span>
+                    <span class="text-xs">+</span>
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-b border-gray-800" id="product-grid">
+                <!-- Products injected here -->
+            </div>
+        </div>
+
+        <!-- PRODUCT DETAIL VIEW -->
+        <div id="view-detail" class="hidden min-h-screen bg-black">
+            <!-- Injected dynamically -->
+            <div id="product-detail-container" class="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-56px)]">
+                <!-- Content filled by JS -->
+            </div>
+
+            <!-- Complete The Look Section (Static for now in layout) -->
+            <div class="px-6 py-12 border-t border-gray-800">
+                <h3 class="text-xl font-light uppercase tracking-widest mb-12">Complete The Look</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3">
+                    <div class="border border-gray-800 p-0 flex flex-col">
+                        <div class="relative flex-1 bg-gray-900 min-h-[500px] overflow-hidden">
+                            <span
+                                class="absolute top-4 right-4 text-[9px] uppercase bg-white text-black px-2 py-1">Sale</span>
+                            <img src="https://picsum.photos/seed/look1/800/1000" class="w-full h-full object-cover"
+                                alt="Look 1" />
+                        </div>
+                        <div class="p-4 flex justify-between items-center text-[10px] uppercase tracking-widest">
+                            <span>Loulou Studio Tania Shoulder Bag</span>
+                            <span class="text-gray-500"><s>$665.00</s> <span
+                                    class="text-white ml-2">$333.00</span></span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-800 p-0 flex flex-col">
+                        <div class="relative flex-1 bg-gray-900 min-h-[500px] overflow-hidden">
+                            <img src="https://picsum.photos/seed/look2/800/1000" class="w-full h-full object-cover"
+                                alt="Look 2" />
+                        </div>
+                        <div class="p-4 flex justify-between items-center text-[10px] uppercase tracking-widest">
+                            <span>Gia Borghini x Heidi Bivens Hunter</span>
+                            <span>$415.00</span>
+                        </div>
+                    </div>
+                    <div class="border border-gray-800 p-0 flex flex-col hidden md:flex">
+                        <div class="relative flex-1 bg-gray-900 min-h-[500px] overflow-hidden">
+                            <img src="https://picsum.photos/seed/look3/800/1000"
+                                class="w-full h-full object-cover opacity-60" alt="Look 3" />
+                        </div>
+                        <div class="p-4 flex justify-between items-center text-[10px] uppercase tracking-widest">
+                            <span>Reserved for Style</span>
+                            <span class="text-gray-500">TBA</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-4 mt-8 text-[11px] uppercase tracking-widest">
+                    <span class="text-white">[01]</span>
+                    <span class="text-gray-500">[02]</span>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white pt-16 pb-4 border-t border-gray-800">
+        <div class="px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+            <div>
+                <h3 class="text-xl mb-6 font-light max-w-xs leading-tight">
+                    Stay informed of our newest arrivals, trends, and promotions.
+                </h3>
+                <div class="flex border-b border-gray-700 py-2">
+                    <input type="email" placeholder="Enter e-mail address"
+                        class="bg-transparent border-none outline-none text-xs w-full placeholder-gray-600 focus:ring-0" />
+                    <button class="text-xs font-bold uppercase tracking-widest px-4">Sign Up</button>
+                </div>
+                <div class="mt-4 flex items-start space-x-2">
+                    <input type="checkbox" id="terms" class="mt-1 accent-white" />
+                    <label for="terms" class="text-[10px] text-gray-500 leading-normal">
+                        I have read and accepted the <span class="underline cursor-pointer">Terms and Conditions</span>
+                        and <span class="underline cursor-pointer">Privacy Policy</span>.
+                    </label>
+                </div>
+            </div>
+
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Menu</p>
+                <a href="#" class="hover:text-white">Collections</a>
+                <a href="#" class="hover:text-white">About</a>
+                <a href="#" class="hover:text-white">Contact</a>
+                <a href="#" class="hover:text-white mt-8">Terms & Conditions</a>
+            </div>
+
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Service</p>
+                <a href="#" class="hover:text-white">Shipping</a>
+                <a href="#" class="hover:text-white">Returns</a>
+                <a href="#" class="hover:text-white">FAQ</a>
+            </div>
+
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Social</p>
+                <a href="#" class="hover:text-white">Instagram</a>
+                <a href="#" class="hover:text-white">Facebook</a>
+                <a href="#" class="hover:text-white mt-8 self-end">Privacy Policy</a>
+            </div>
+        </div>
+
+        <div class="px-6 pb-4 overflow-hidden select-none">
+            <h1
+                class="text-[25vw] font-bold leading-none tracking-tighter text-white -mb-8 pointer-events-none serif-font">
+                RAÚM
+            </h1>
+        </div>
+    </footer>
+
+    <!-- CART DRAWER -->
+    <div id="cart-drawer-overlay"
+        class="fixed inset-0 bg-black/60 z-[100] transition-opacity duration-500 opacity-0 pointer-events-none"
+        onclick="toggleCart(false)">
+    </div>
+
+    <div id="cart-drawer"
+        class="fixed top-0 right-0 h-full w-full max-w-md bg-black border-l border-gray-800 z-[101] transition-transform duration-500 transform translate-x-full">
+        <div class="flex flex-col h-full">
+            <!-- Header -->
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <h2 class="text-xl font-light uppercase tracking-widest">Your Bag <span
+                        class="text-xs opacity-50 ml-1">[<span id="cart-count-header">0</span>]</span></h2>
+                <button onclick="toggleCart(false)"
+                    class="text-[10px] uppercase tracking-widest flex items-center group">
+                    Close <span class="ml-2 text-lg group-hover:rotate-90 transition-transform">×</span>
+                </button>
+            </div>
+
+            <!-- Items List -->
+            <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-8">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Footer -->
+            <div class="p-6 bg-black border-t border-gray-800">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-xs uppercase tracking-[0.2em] font-bold">Subtotal:</span>
+                    <span class="text-sm tracking-widest font-light">$<span id="cart-subtotal">0.00</span></span>
+                </div>
+                <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest">Taxes and shipping calculated at
+                    checkout</p>
+                <button id="checkout-btn"
+                    class="w-full bg-white text-black py-4 text-[11px] uppercase font-bold tracking-[0.3em] hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled>
+                    Checkout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT -->
+    <script>
+        // --- DATA ---
+        const PRODUCTS = [
+            { id: '1', name: 'MAVIS OVERSIZED TRENCH', price: 345.00, category: 'Outerwear', image: 'https://picsum.photos/seed/trench1/800/1200', isNew: false },
+            { id: '2', name: 'NAICA LEATHER JACKET', price: 285.00, category: 'Outerwear', image: 'https://picsum.photos/seed/leather1/800/1200', isNew: true },
+            { id: '3', name: 'ARLISE TRENCH COAT', price: 325.00, category: 'Outerwear', image: 'https://picsum.photos/seed/trench2/800/1200', isNew: false },
+            { id: '4', name: 'ARBOR LEATHER JACKET', price: 275.00, category: 'Outerwear', image: 'https://picsum.photos/seed/leather2/800/1200', isNew: false },
+            { id: '5', name: 'PRILLY OVERSIZED SHIRT', price: 169.00, category: 'Tops', image: 'https://picsum.photos/seed/shirt1/800/1200', isNew: false },
+            { id: '6', name: 'BEAUFILLE BAES CROP TOP WITH GLOVES', price: 470.00, category: 'Tops', image: 'https://picsum.photos/seed/crop1/800/1200', isNew: false },
+            { id: '7', name: 'ROTATE OVERSIZED T-SHIRT', price: 90.00, category: 'Tops', image: 'https://picsum.photos/seed/tee1/800/1200', isNew: false },
+            { id: '8', name: 'PELSO BARN JACKET', price: 295.00, category: 'Outerwear', image: 'https://picsum.photos/seed/barn1/800/1200', isNew: true },
+            { id: '9', name: 'PEORIA SUEDE BLAZER', price: 278.00, category: 'Outerwear', image: 'https://picsum.photos/seed/blazer1/800/1200', isNew: false },
+            {
+                id: 'detail-1',
+                name: 'NAAZ BLAZER',
+                price: 319.00,
+                category: 'Outerwear',
+                image: 'https://picsum.photos/seed/naaz/800/1200',
+                thumbnails: [
+                    'https://picsum.photos/seed/naaz1/400/600',
+                    'https://picsum.photos/seed/naaz2/400/600',
+                    'https://picsum.photos/seed/naaz3/400/600',
+                    'https://picsum.photos/seed/naaz4/400/600',
+                ],
+                details: [
+                    'Black color', 'Lightweight satin fabric', 'Relaxed fit', 'Notch lapels',
+                    'Padded shoulders', 'Single welt breast pocket', 'Button cuffs',
+                    'Front flap pockets', 'Front button closure', '58% Viscose 42% Modal'
+                ]
+            }
+        ];
+
+        const CATEGORIES = [
+            'All', 'Outerwear', 'Knitwear', 'Tops', 'Bottoms', 'Dresses', 'Jumpsuits', 'Longwear'
+        ];
+
+        // --- STATE ---
+        let state = {
+            view: 'listing', // 'home' | 'listing' | 'detail'
+            activeCategory: 'All',
+            selectedProduct: null,
+            cart: [],
+            detailSize: 'M'
+        };
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const demoProduct = PRODUCTS.find(p => p.id === 'detail-1');
+            if (demoProduct) {
+                state.selectedProduct = demoProduct;
+                setView('detail');
+            } else {
+                setView('listing');
+            }
+
+            renderCategories();
+            renderProducts();
+            updateCartUI();
+        });
+
+        // --- NAVIGATION & VIEWS ---
+        function setView(viewName) {
+            state.view = viewName;
+
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-listing').classList.add('hidden');
+            document.getElementById('view-detail').classList.add('hidden');
+
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+
+            if (viewName === 'detail' && state.selectedProduct) {
+                renderDetail(state.selectedProduct);
+            }
+            if (viewName === 'listing') {
+                renderProducts();
+            }
+            if (viewName === 'detail') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function handleNavHome() { setView('home'); }
+        function handleNavShop() { setView('listing'); }
+
+        // --- LISTING & FILTERING ---
+        function renderCategories() {
+            const container = document.getElementById('category-filters');
+            container.innerHTML = CATEGORIES.map(cat => `
+                <button 
+                    onclick="setCategory('${cat}')"
+                    class="${state.activeCategory === cat ? 'border-b border-white' : 'text-gray-500 hover:text-white'} pb-1"
+                >
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            state.activeCategory = cat;
+            renderCategories();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const filtered = PRODUCTS.filter(p =>
+                p.id !== 'detail-1' &&
+                (state.activeCategory === 'All' || p.category === state.activeCategory)
+            );
+
+            grid.innerHTML = filtered.map((product, idx) => {
+                const isBig = idx === 5;
+                const classes = `border-r border-b border-gray-800 group cursor-pointer ${isBig ? 'lg:col-span-2 lg:row-span-2' : ''}`;
+
+                return `
+                    <div class="${classes}" onclick="selectProduct('${product.id}')">
+                        <div class="relative aspect-[3/4] overflow-hidden bg-gray-900">
+                            <img 
+                                src="${product.image}" 
+                                alt="${product.name}" 
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            ${product.isNew ? `
+                                <span class="absolute top-4 right-4 text-[9px] uppercase tracking-widest bg-white text-black px-2 py-1">
+                                    New in
+                                </span>
+                            ` : ''}
+                        </div>
+                        <div class="p-4 flex justify-between items-start text-[10px] uppercase tracking-[0.1em]">
+                            <h3 class="max-w-[150px] leading-relaxed">${product.name}</h3>
+                            <p class="text-gray-400">$${product.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectProduct(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            if (product) {
+                state.selectedProduct = product;
+                state.detailSize = 'M';
+                setView('detail');
+            }
+        }
+
+        // --- DETAIL VIEW ---
+        function renderDetail(product) {
+            const container = document.getElementById('product-detail-container');
+            const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+            const thumbs = product.thumbnails || [product.image, product.image, product.image, product.image];
+            const detailsList = product.details || ['Standard fit', 'High quality material', 'Imported'];
+
+            container.innerHTML = `
+                <!-- Left Side -->
+                <div class="lg:col-span-4 p-8 border-r border-gray-800 overflow-y-auto">
+                    <nav class="text-[9px] text-gray-500 uppercase tracking-widest mb-12">
+                        Catalog / ${product.category} / ${product.name}
+                    </nav>
+
+                    <div class="mb-12">
+                        <h1 class="text-3xl font-light uppercase tracking-widest mb-2">${product.name}</h1>
+                        <p class="text-sm tracking-widest">$${product.price.toFixed(2)}</p>
+                    </div>
+
+                    <div class="mb-12">
+                        <h4 class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">Details</h4>
+                        <ul class="space-y-2">
+                            ${detailsList.map(d => `
+                                <li class="text-[11px] leading-relaxed text-gray-300 flex items-start">
+                                    <span class="mr-2">•</span> ${d}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <button class="text-[10px] uppercase underline mt-6 text-gray-500">Size guide</button>
+                    </div>
+
+                    <div class="mt-20 border-t border-gray-800 flex text-[10px] uppercase tracking-widest">
+                        <button class="flex-1 py-4 border-r border-gray-800 bg-white text-black font-bold">Details</button>
+                        <button class="flex-1 py-4 border-r border-gray-800 hover:bg-gray-900 transition-colors">Size & Fit</button>
+                        <button class="flex-1 py-4 hover:bg-gray-900 transition-colors">Shipping & Returns</button>
+                    </div>
+                </div>
+
+                <!-- Center Image -->
+                <div class="lg:col-span-4 relative border-r border-gray-800 bg-gray-900 overflow-hidden group">
+                    <img src="${product.image}" class="w-full h-full object-cover" alt="${product.name}" />
+                    <button class="absolute left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button class="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </div>
+
+                <!-- Right Side -->
+                <div class="lg:col-span-4 flex flex-col">
+                    <div class="flex border-b border-gray-800">
+                        ${thumbs.map(t => `
+                            <div class="flex-1 aspect-[2/3] border-r last:border-r-0 border-gray-800 bg-gray-900 overflow-hidden cursor-pointer hover:opacity-80 transition-opacity">
+                                <img src="${t}" class="w-full h-full object-cover" />
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="p-8 flex-1">
+                        <div class="mb-8">
+                            <h4 class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">Color: <span class="text-white underline ml-1">Black</span></h4>
+                            <div class="w-6 h-6 border border-white bg-black p-0.5">
+                                <div class="w-full h-full bg-black border border-gray-700"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-12">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="text-[10px] uppercase tracking-widest text-gray-500">Select a Size:</h4>
+                                <button class="text-[9px] uppercase underline text-gray-500">Size guide</button>
+                            </div>
+                            <div class="flex space-x-8 text-[11px] uppercase tracking-widest" id="size-selector">
+                               <!-- RENDERED -->
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mt-auto">
+                            <button 
+                                onclick="addToBag()"
+                                class="w-full bg-white text-black py-4 text-[11px] uppercase font-bold tracking-[0.2em] hover:bg-gray-200 transition-colors"
+                            >
+                                Add to Bag
+                            </button>
+                            <button class="w-full border border-gray-800 py-4 text-[11px] uppercase font-bold tracking-[0.2em] hover:bg-white hover:text-black transition-all">
+                                Add to Wishlist
+                            </button>
+                            <div class="flex justify-between text-[9px] uppercase tracking-widest text-gray-500 pt-4">
+                                <button class="underline">Check in-store availability</button>
+                                <button class="underline">Need help?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            const sizeContainer = document.getElementById('size-selector');
+            sizeContainer.innerHTML = sizes.map(size => `
+                <button 
+                    onclick="setDetailSize('${size}')"
+                    class="${state.detailSize === size ? 'border-b border-white text-white' : 'text-gray-500 hover:text-gray-300'} pb-1"
+                >
+                    ${size}
+                </button>
+            `).join('');
+        }
+
+        function setDetailSize(size) {
+            state.detailSize = size;
+            renderDetail(state.selectedProduct);
+        }
+
+        function addToBag() {
+            if (!state.selectedProduct) return;
+            const item = { ...state.selectedProduct, quantity: 1, selectedSize: state.detailSize, selectedColor: 'Black' };
+            const existing = state.cart.find(i => i.id === item.id && i.selectedSize === item.selectedSize);
+            if (existing) { existing.quantity += 1; } else { state.cart.push(item); }
+            updateCartUI();
+            toggleCart(true);
+        }
+
+        // --- CART ---
+        function toggleCart(isOpen) {
+            const overlay = document.getElementById('cart-drawer-overlay');
+            const drawer = document.getElementById('cart-drawer');
+            if (isOpen) {
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                overlay.classList.add('opacity-100');
+                drawer.classList.remove('translate-x-full');
+                drawer.classList.add('translate-x-0');
+            } else {
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                drawer.classList.remove('translate-x-0');
+                drawer.classList.add('translate-x-full');
+            }
+        }
+
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const countHeader = document.getElementById('cart-count-header');
+            const bagCount = document.getElementById('bag-count');
+            const subtotalEl = document.getElementById('cart-subtotal');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            const totalQty = state.cart.reduce((a, b) => a + b.quantity, 0);
+            const subtotal = state.cart.reduce((a, b) => a + b.price * b.quantity, 0);
+
+            countHeader.innerText = totalQty;
+            bagCount.innerText = totalQty;
+            subtotalEl.innerText = subtotal.toFixed(2);
+
+            if (state.cart.length === 0) {
+                checkoutBtn.disabled = true;
+                cartItemsContainer.innerHTML = `<p class="text-center text-gray-500 text-xs uppercase tracking-widest py-20">Your bag is empty.</p>`;
+                return;
+            }
+
+            checkoutBtn.disabled = false;
+            cartItemsContainer.innerHTML = state.cart.map(item => `
+                <div class="flex space-x-6 pb-8 border-b border-gray-900 last:border-0">
+                    <div class="w-24 aspect-[2/3] bg-gray-900 overflow-hidden">
+                        <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover" />
+                    </div>
+                    <div class="flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-[11px] uppercase tracking-widest leading-relaxed max-w-[150px]">${item.name}</h3>
+                            <p class="text-[11px] uppercase tracking-widest">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <div class="text-[10px] uppercase tracking-widest text-gray-500 space-y-1 mb-4">
+                            <p>Size: <span class="text-white ml-1">${item.selectedSize}</span> •</p>
+                            <p>Colour: <span class="text-white ml-1">${item.selectedColor}</span> •</p>
+                        </div>
+                        <div class="mt-auto flex justify-between items-end">
+                            <div class="flex border border-gray-800 items-center">
+                                <button onclick="updateQuantity('${item.id}', '${item.selectedSize}', -1)" class="px-2 py-1 border-r border-gray-800 hover:bg-gray-900">-</button>
+                                <span class="px-3 text-[10px]">${item.quantity}</span>
+                                <button onclick="updateQuantity('${item.id}', '${item.selectedSize}', 1)" class="px-2 py-1 border-l border-gray-800 hover:bg-gray-900">+</button>
+                            </div>
+                            <button onclick="removeFromCart('${item.id}', '${item.selectedSize}')" class="text-[9px] uppercase underline text-gray-500 hover:text-white">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateQuantity(id, size, delta) {
+            const item = state.cart.find(i => i.id === id && i.selectedSize === size);
+            if (item) { item.quantity = Math.max(1, item.quantity + delta); updateCartUI(); }
+        }
+
+        function removeFromCart(id, size) {
+            state.cart = state.cart.filter(i => !(i.id === id && i.selectedSize === size));
+            updateCartUI();
+        }
+    </script>
+</body>
+
+</html>

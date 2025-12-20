@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAÚM Fashion Store</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: black;
+            color: white;
+        }
+
+        .serif-font {
+            font-family: 'Georgia', serif;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* HTMX Indicator */
+        .htmx-indicator {
+            opacity: 0;
+            transition: opacity 200ms ease-in;
+        }
+
+        .htmx-request .htmx-indicator {
+            opacity: 1;
+        }
+
+        .htmx-request.htmx-indicator {
+            opacity: 1;
+        }
+
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data>
+
+    <!-- NAVBAR -->
+    <nav
+        class="w-full bg-black border-b border-gray-800 text-[11px] font-medium uppercase tracking-[0.15em] sticky top-0 z-50">
+        <div class="flex justify-between items-center px-6 h-14">
+            <!-- Left Section: Logo -->
+            <div class="flex items-center space-x-12">
+                <a href="{% url 'catalog:list' %}" class="text-2xl font-bold tracking-tighter normal-case serif-font"
+                    hx-boost="true" hx-target="#main-content" hx-swap="innerHTML show:top">
+                    RAÚM
+                </a>
+
+                <div class="hidden md:flex space-x-8">
+                    <a href="{% url 'catalog:list' %}" class="hover:text-gray-400" hx-boost="true"
+                        hx-target="#main-content" hx-swap="innerHTML show:top">
+                        Shop
+                    </a>
+                    <button class="hover:text-gray-400">Collections</button>
+                    <button class="hover:text-gray-400">About</button>
+                </div>
+            </div>
+
+            <!-- Right Section: Actions -->
+            <div class="flex items-center space-x-8">
+                <button @click="$dispatch('open-search')" class="hover:text-gray-400">Search</button>
+                <!-- Cart Trigger (Alpine) -->
+                <button @click="$dispatch('open-cart')" class="hover:text-gray-400 flex items-center">
+                    Bag <span class="ml-1 opacity-60">[<span id="bag-count">0</span>]</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <!-- hx-target for links pointing here -->
+    <main id="main-content" class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white pt-16 pb-4 border-t border-gray-800">
+        <div class="px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
+            <!-- Footer Content (Static) -->
+            <div>
+                <h3 class="text-xl mb-6 font-light max-w-xs leading-tight">
+                    Stay informed of our newest arrivals, trends, and promotions.
+                </h3>
+                <div class="flex border-b border-gray-700 py-2">
+                    <input type="email" placeholder="Enter e-mail address"
+                        class="bg-transparent border-none outline-none text-xs w-full placeholder-gray-600 focus:ring-0" />
+                    <button class="text-xs font-bold uppercase tracking-widest px-4">Sign Up</button>
+                </div>
+            </div>
+            <!-- ... Other footer cols ... -->
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Menu</p>
+                <a href="#" class="hover:text-white">Collections</a>
+                <a href="#" class="hover:text-white">About</a>
+            </div>
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Service</p>
+                <a href="#" class="hover:text-white">Shipping</a>
+            </div>
+            <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
+                <p class="text-white mb-2">Social</p>
+                <a href="#" class="hover:text-white">Instagram</a>
+            </div>
+        </div>
+        <div class="px-6 pb-4 overflow-hidden select-none">
+            <h1
+                class="text-[25vw] font-bold leading-none tracking-tighter text-white -mb-8 pointer-events-none serif-font">
+                RAÚM
+            </h1>
+        </div>
+    </footer>
+
+    <!-- CART MODAL (Included via Partial or loaded via HTMX) -->
+    <!-- We'll treat this as a persistent alpine component for now, or load it via HTMX -->
+    {% include "partials/cart_modal.html" %}
+    {% include "partials/search_modal.html" %}
+
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,22 @@
+{% if products %}
+<div class="space-y-6">
+    {% for product in products %}
+    <a href="{% url 'catalog:detail' product.slug %}" class="flex space-x-4 group hover:opacity-80 transition-opacity">
+        <div class="w-16 aspect-[2/3] bg-gray-900 flex-shrink-0">
+            {% if product.images.first %}
+            <img src="{{ product.images.first.image.url }}" class="w-full h-full object-cover">
+            {% endif %}
+        </div>
+        <div class="flex flex-col justify-center">
+            <h4 class="text-sm font-medium uppercase tracking-widest">{{ product.name }}</h4>
+            <p class="text-xs text-gray-500 tracking-widest mt-1">${{ product.price }}</p>
+            <p class="text-[10px] text-gray-500 mt-1">{{ product.category.name }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-12">
+    <p class="text-gray-500 uppercase tracking-widest text-xs">No results found.</p>
+</div>
+{% endif %}
