@@ -1,10 +1,14 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_headers
 from .models import Product, Category
 
 def is_htmx(request):
     return request.headers.get('HX-Request') == 'true'
 
+@cache_page(60 * 15)
+@vary_on_headers('HX-Request')
 def catalog_list(request, slug=None):
     category = None
     products = Product.objects.filter(is_active=True).prefetch_related('images')
@@ -56,6 +60,8 @@ def catalog_list(request, slug=None):
     
     return render(request, 'catalog/list.html', context)
 
+@cache_page(60 * 15)
+@vary_on_headers('HX-Request')
 def product_detail(request, slug):
     product = get_object_or_404(Product, slug=slug, is_active=True)
     
