@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from apps.orders.models import Order
 from .services import NowPaymentsService
+from .models import PaymentTransaction
 import json
 
 def payment_process(request):
@@ -24,6 +25,16 @@ def payment_process(request):
         invoice = payment_service.create_invoice(order, success_url, cancel_url, ipn_url)
         order.payment_id = invoice.get('id')
         order.save()
+        
+        PaymentTransaction.objects.create(
+            order=order,
+            payment_id=invoice.get('id'),
+            status='created',
+            amount=order.total_price,
+            currency='USD',
+            payload=invoice
+        )
+        
         return redirect(invoice.get('invoice_url'))
     except Exception:
         return redirect('catalog:list')
@@ -47,11 +58,26 @@ def payment_webhook(request):
     if payment_service.verify_ipn_signature(signature, payload):
         order_id = payload.get('order_id')
         payment_status = payload.get('payment_status')
+        payment_id = payload.get('payment_id')
+        
+        order = get_object_or_404(Order, id=order_id)
+        
+        PaymentTransaction.objects.update_or_create(
+            payment_id=payment_id,
+            defaults={
+                'order': order,
+                'status': payment_status,
+                'amount': payload.get('actually_paid', order.total_price),
+                'currency': payload.get('pay_currency', 'USD'),
+                'payload': payload
+            }
+        )
         
         if payment_status == 'finished':
-            order = Order.objects.get(id=order_id)
             order.status = 'paid'
             order.save()
             return HttpResponse(status=200)
+        
+        return HttpResponse(status=200)
     
     return HttpResponse(status=400)
