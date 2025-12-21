@@ -7,7 +7,7 @@ def is_htmx(request):
 
 def catalog_list(request, slug=None):
     category = None
-    products = Product.objects.filter(is_active=True)
+    products = Product.objects.filter(is_active=True).prefetch_related('images')
 
     categories = Category.objects.filter(parent__isnull=True)
 
@@ -63,7 +63,7 @@ def product_detail(request, slug):
     related_products = Product.objects.filter(
         category=product.category, 
         is_active=True
-    ).exclude(id=product.id).order_by('?')[:2]
+    ).exclude(id=product.id).prefetch_related('images').order_by('?')[:2]
     
     context = {
         'product': product,

@@ -112,8 +112,8 @@
             hx-get="{% url 'catalog:detail' slug=product.slug %}" hx-target="#main-content" hx-push-url="true">
 
             <div class="relative aspect-[3/4] overflow-hidden bg-gray-900">
-                {% if product.images.exists %}
-                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
+                {% if product.images.all %}
+                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.name }}"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                 {% else %}
                 <div class="w-full h-full flex items-center justify-center bg-gray-800 text-gray-600">No Image</div>

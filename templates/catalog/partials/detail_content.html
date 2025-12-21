@@ -68,7 +68,7 @@
         <div
             class="lg:col-span-4 relative border-r border-gray-800 bg-gray-900 overflow-hidden group flex items-center justify-center">
 
-            {% if product.images.exists %}
+            {% if product.images.all %}
             <!-- Main Image Bound to Alpine -->
             <img :src="images[activeImageIndex]" class="w-full h-full object-cover transition-opacity duration-300"
                 alt="{{ product.name }}" />
