@@ -1,0 +1,46 @@
+<div x-data="{ open: false }" @open-add-modal.window="open = true" @keydown.escape.window="open = false"
+    class="relative z-[110]" x-cloak>
+
+    <div x-show="open" x-transition:enter="transition-opacity duration-500" x-transition:enter-start="opacity-0"
+        x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity duration-500"
+        x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="open = false"
+        class="fixed inset-0 bg-black/80 backdrop-blur-sm">
+    </div>
+
+    <div x-show="open" x-transition:enter="transition-all duration-500" x-transition:enter-start="opacity-0 scale-95"
+        x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition-all duration-500"
+        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+        class="fixed inset-0 flex items-center justify-center p-4 pointer-events-none">
+
+        <div class="bg-black border border-gray-800 w-full max-w-md pointer-events-auto flex flex-col shadow-2xl">
+            <div class="p-6 border-b border-gray-900 flex justify-between items-center">
+                <h2 class="text-sm font-medium uppercase tracking-[0.2em] text-white">
+                    YOUR BAG [<span id="add-modal-count">0</span>]
+                </h2>
+                <button @click="open = false"
+                    class="text-[10px] uppercase tracking-[0.2em] text-white hover:opacity-60 transition-opacity flex items-center">
+                    CLOSE <span class="ml-2 text-lg">×</span>
+                </button>
+            </div>
+
+            <div id="add-modal-items"
+                class="items-list-container p-6 space-y-8 overflow-y-auto max-h-[60vh] no-scrollbar">
+            </div>
+
+            <div class="p-6 bg-black border-t border-gray-900 mt-auto">
+                <div class="flex justify-between items-center mb-4 text-white">
+                    <span class="text-[10px] uppercase tracking-[0.2em] font-bold">SUBTOTAL:</span>
+                    <span class="text-sm tracking-widest font-light font-mono">$<span
+                            id="add-modal-subtotal">0.00</span></span>
+                </div>
+                <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest leading-relaxed">
+                    Taxes and shipping calculated at checkout
+                </p>
+                <button
+                    class="w-full bg-white text-black py-5 text-[11px] uppercase font-bold tracking-[0.4em] hover:bg-gray-200 transition-colors">
+                    CHECKOUT
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

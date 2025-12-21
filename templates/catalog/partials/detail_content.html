@@ -49,8 +49,7 @@
                         <div class="grid grid-cols-2 gap-2 text-[10px]">
                             {% if product.lens_width %}<div>Lens Width: {{ product.lens_width }}</div>{% endif %}
                             {% if product.bridge_width %}<div>Bridge: {{ product.bridge_width }}</div>{% endif %}
-                            {% if product.frame_front_width %}<div>Frame Front: {{ product.frame_front_width }}</div>
-                            {%endif %}
+                            {% if product.frame_front_width %}<div>Frame Front: {{ product.frame_front_width }}</div>{%endif %}
                             {% if product.temple_length %}<div>Temple: {{ product.temple_length }}</div>{% endif %}
                         </div>
                     </div>
@@ -118,7 +117,7 @@
                           selectedSize: null, 
                           hasSizes: {{ product.available_sizes|yesno:'true,false' }},
                           get isReady() { return !this.hasSizes || this.selectedSize }
-                      }" hx-post="{% url 'cart:add' product.id %}" hx-target="#bag-count" hx-swap="innerHTML">
+                      }" hx-post="{% url 'cart:add' product.id %}" hx-swap="none">
 
                     <input type="hidden" name="size" x-model="selectedSize">
 
@@ -148,7 +147,7 @@
                     {% endif %}
 
                     <div class="space-y-4">
-                        <button type="submit" {% if product.stock> 0 %}
+                        <button type="submit" {% if product.stock > 0 %}
                             :disabled="!isReady"
                             :class="{ 'opacity-50 cursor-not-allowed': !isReady }"
                             {% else %}disabled{% endif %}

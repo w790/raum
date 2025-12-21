@@ -1,0 +1,21 @@
+{% include "cart/partials/items_content.html" %}
+
+<span id="cart-count" hx-swap-oob="true">{{ total_items }}</span>
+<span id="bag-count" hx-swap-oob="true">{{ total_items }}</span>
+<span id="cart-subtotal" hx-swap-oob="true">{{ total_price }}</span>
+
+<span id="add-modal-count" hx-swap-oob="true">{{ total_items }}</span>
+<span id="add-modal-subtotal" hx-swap-oob="true">{{ total_price }}</span>
+
+{% if request.headers.HX_Target != "cart-items" %}
+<div id="cart-items" class="items-list-container flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar" hx-swap-oob="true">
+    {% include "cart/partials/items_content.html" %}
+</div>
+{% endif %}
+
+{% if request.headers.HX_Target != "add-modal-items" %}
+<div id="add-modal-items" class="items-list-container p-6 space-y-8 overflow-y-auto max-h-[60vh] no-scrollbar"
+    hx-swap-oob="true">
+    {% include "cart/partials/items_content.html" %}
+</div>
+{% endif %}

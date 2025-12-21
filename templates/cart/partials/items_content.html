@@ -1,0 +1,56 @@
+{% if cart %}
+<div class="space-y-10">
+    {% for item in cart %}
+    <div class="flex space-x-6 last:border-0 relative">
+        <div class="w-24 aspect-[2/3] bg-gray-900 overflow-hidden flex-shrink-0">
+            {% if item.image %}
+            <img src="{{ item.image }}" class="w-full h-full object-cover" />
+            {% else %}
+            <div class="w-full h-full bg-gray-800 flex items-center justify-center text-[10px] text-gray-600">NO IMAGE
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="flex-1 flex flex-col pt-1">
+            <div class="flex justify-between items-start mb-1">
+                <div>
+                    <h3 class="text-[13px] uppercase tracking-widest font-bold leading-tight text-white">{{ item.name }}
+                    </h3>
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500 mt-1">Glasses</p>
+                    <p class="text-[10px] uppercase tracking-widest text-gray-500">Color: Silver</p>
+                </div>
+                <p class="text-[12px] uppercase tracking-widest font-medium text-white">${{ item.total_price }}</p>
+            </div>
+
+            <div class="flex justify-between items-end mt-6">
+                <div class="flex items-center border border-gray-800">
+                    <button class="px-3 py-1.5 hover:bg-white hover:text-black transition-colors text-white text-[12px]"
+                        hx-post="{% url 'cart:update' item.key %}" hx-vals='{"action": "decrement"}'
+                        hx-target="closest .items-list-container" hx-swap="innerHTML">
+                        -
+                    </button>
+                    <span class="px-3 text-[12px] font-light min-w-[20px] text-center text-white">{{item.quantity}}</span>
+                    <button class="px-3 py-1.5 hover:bg-white hover:text-black transition-colors text-white text-[12px]"
+                        hx-post="{% url 'cart:update' item.key %}" hx-vals='{"action": "increment"}'
+                        hx-target="closest .items-list-container" hx-swap="innerHTML">
+                        +
+                    </button>
+                </div>
+
+                <button hx-post="{% url 'cart:remove' item.key %}" hx-target="closest .items-list-container"
+                    hx-swap="innerHTML"
+                    class="text-[10px] uppercase tracking-widest text-gray-500 hover:text-white transition-colors underline decoration-gray-800 underline-offset-4">
+                    Remove
+                </button>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="py-20 flex flex-col items-center justify-center text-center">
+    <p class="text-gray-500 text-[10px] uppercase tracking-widest mb-4">Your bag is currently empty.</p>
+    <button @click="open = false"
+        class="text-[10px] text-white uppercase tracking-widest underline underline-offset-4">Start Shopping</button>
+</div>
+{% endif %}

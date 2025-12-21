@@ -1,22 +1,18 @@
-<!-- CART DRAWER (Alpine Component) -->
-<div x-data="{ open: false }" @open-cart.window="open = true" @keydown.escape.window="open = false"
+<div x-data="{ open: false }" @open-cart-drawer.window="open = true" @keydown.escape.window="open = false"
     class="relative z-[100]" x-cloak>
 
-    <!-- Overlay -->
     <div x-show="open" x-transition:enter="transition-opacity duration-500" x-transition:enter-start="opacity-0"
         x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity duration-500"
         x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" @click="open = false"
         class="fixed inset-0 bg-black/60 backdrop-blur-sm">
     </div>
 
-    <!-- Drawer -->
     <div x-show="open" x-transition:enter="transition-transform duration-500"
         x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
         x-transition:leave="transition-transform duration-500" x-transition:leave-start="translate-x-0"
         x-transition:leave-end="translate-x-full"
         class="fixed top-0 right-0 h-full w-full max-w-md bg-black border-l border-gray-800 flex flex-col shadow-2xl">
 
-        <!-- Header -->
         <div class="p-6 border-b border-gray-800 flex justify-between items-center bg-black z-10">
             <h2 class="text-xl font-light uppercase tracking-widest text-white">
                 Your Bag <span class="text-xs opacity-50 ml-1 text-white">[<span id="cart-count">0</span>]</span>
@@ -27,19 +23,16 @@
             </button>
         </div>
 
-        <!-- Items List -->
-        <!-- This part is dynamically loaded via HTMX when the cart opens -->
-        <div id="cart-items" class="flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar" hx-get="{% url 'cart:detail' %}"
-            hx-trigger="open-cart from:body" hx-swap="innerHTML">
+        <div id="cart-items" class="items-list-container flex-1 overflow-y-auto p-6 space-y-8 no-scrollbar"
+            hx-get="{% url 'cart:detail' %}" hx-trigger="open-cart-drawer from:body" hx-swap="innerHTML">
 
             <p class="text-center text-gray-500 text-xs uppercase tracking-widest py-20">Your bag is empty.</p>
         </div>
 
-        <!-- Footer -->
         <div class="p-6 bg-black border-t border-gray-800">
             <div class="flex justify-between items-center mb-6 text-white">
                 <span class="text-xs uppercase tracking-[0.2em] font-bold">Subtotal:</span>
-                <span class="text-sm tracking-widest font-light">$<span id="cart-subtotal">0.00</span></span>
+                <span class="text-sm tracking-widest font-light font-mono">$<span id="cart-subtotal">0.00</span></span>
             </div>
             <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest">
                 Taxes and shipping calculated at checkout

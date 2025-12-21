@@ -4,9 +4,6 @@ from apps.catalog.models import Product
 
 class CartService:
     def __init__(self, request):
-        """
-        Initialize the cart using the session.
-        """
         self.session = request.session
         cart = self.session.get('cart')
         if not cart:
@@ -14,11 +11,7 @@ class CartService:
         self.cart = cart
 
     def add(self, product, size=None, quantity=1, update_quantity=False):
-        """
-        Add a product to the cart or update its quantity.
-        """
         product_id = str(product.id)
-        # Unique key composition
         item_key = f"{product_id}_{size}" if size else product_id
 
         if item_key not in self.cart:
@@ -28,8 +21,6 @@ class CartService:
                 'quantity': 0,
                 'price': str(product.price),
                 'size': size,
-                # Store enough info to render without DB hit if possible, 
-                # though views might fetch fresh main image
                 'image': product.images.first().image.url if product.images.exists() else '' 
             }
         
@@ -40,36 +31,30 @@ class CartService:
         
         self.save()
 
+    def update_quantity(self, item_key, quantity_change):
+        if item_key in self.cart:
+            self.cart[item_key]['quantity'] += quantity_change
+            if self.cart[item_key]['quantity'] <= 0:
+                self.remove(item_key)
+            self.save()
+
     def remove(self, item_key):
-        """
-        Remove a product from the cart.
-        """
         if item_key in self.cart:
             del self.cart[item_key]
             self.save()
 
     def save(self):
-        # Mark the session as "modified" to make sure it gets saved
         self.session.modified = True
 
     def __iter__(self):
-        """
-        Iterate over the items in the cart and get the products from the database.
-        """
-        # Note: For simple rendering we might rely on stored session data, 
-        # but for robustness it's often good to re-fetch or just yield the dicts.
-        # Given Requirements 'N+1 problem', if we needed objects we would fetch them.
-        # For now, yielding the dicts from session is sufficient and fast for the modal.
-        for item_key, item in self.cart.items():
+        for item_key, item_data in self.cart.items():
+            item = item_data.copy()
             item['price'] = Decimal(item['price'])
             item['total_price'] = item['price'] * item['quantity']
             item['key'] = item_key 
             yield item
 
     def __len__(self):
-        """
-        Count all items in the cart.
-        """
         return sum(item['quantity'] for item in self.cart.values())
 
     def get_total_price(self):

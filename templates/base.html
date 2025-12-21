@@ -5,11 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RAÚM Fashion Store</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <style>
@@ -34,7 +31,6 @@
             scrollbar-width: none;
         }
 
-        /* HTMX Indicator */
         .htmx-indicator {
             opacity: 0;
             transition: opacity 200ms ease-in;
@@ -56,11 +52,9 @@
 
 <body class="flex flex-col min-h-screen" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' x-data>
 
-    <!-- NAVBAR -->
     <nav
         class="w-full bg-black border-b border-gray-800 text-[11px] font-medium uppercase tracking-[0.15em] sticky top-0 z-50">
         <div class="flex justify-between items-center px-6 h-14">
-            <!-- Left Section: Logo -->
             <div class="flex items-center space-x-12">
                 <a href="{% url 'catalog:list' %}" class="text-2xl font-bold tracking-tighter normal-case serif-font"
                     hx-boost="true" hx-target="#main-content" hx-swap="innerHTML show:top">
@@ -77,27 +71,21 @@
                 </div>
             </div>
 
-            <!-- Right Section: Actions -->
             <div class="flex items-center space-x-8">
                 <button @click="$dispatch('open-search')" class="hover:text-gray-400">Search</button>
-                <!-- Cart Trigger (Alpine) -->
-                <button @click="$dispatch('open-cart')" class="hover:text-gray-400 flex items-center">
-                    Bag <span class="ml-1 opacity-60">[<span id="bag-count">0</span>]</span>
+                <button @click="$dispatch('open-cart-drawer')" class="hover:text-gray-400 flex items-center">
+                    Bag <span class="ml-1 opacity-60">[<span id="bag-count">{{ cart|length|default:0 }}</span>]</span>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- MAIN CONTENT -->
-    <!-- hx-target for links pointing here -->
     <main id="main-content" class="flex-1">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- FOOTER -->
     <footer class="bg-black text-white pt-16 pb-4 border-t border-gray-800">
         <div class="px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20">
-            <!-- Footer Content (Static) -->
             <div>
                 <h3 class="text-xl mb-6 font-light max-w-xs leading-tight">
                     Stay informed of our newest arrivals, trends, and promotions.
@@ -108,7 +96,6 @@
                     <button class="text-xs font-bold uppercase tracking-widest px-4">Sign Up</button>
                 </div>
             </div>
-            <!-- ... Other footer cols ... -->
             <div class="flex flex-col space-y-3 text-[11px] uppercase tracking-widest text-gray-400">
                 <p class="text-white mb-2">Menu</p>
                 <a href="#" class="hover:text-white">Collections</a>
@@ -131,9 +118,8 @@
         </div>
     </footer>
 
-    <!-- CART MODAL (Included via Partial or loaded via HTMX) -->
-    <!-- We'll treat this as a persistent alpine component for now, or load it via HTMX -->
-    {% include "partials/cart_modal.html" %}
+    {% include "cart/modal.html" %}
+    {% include "cart/add_to_bag_modal.html" %}
     {% include "partials/search_modal.html" %}
 
     <script>
