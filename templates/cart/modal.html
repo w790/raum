@@ -37,7 +37,8 @@
             <p class="text-[10px] text-gray-500 mb-8 uppercase tracking-widest">
                 Taxes and shipping calculated at checkout
             </p>
-            <button
+            <button @click="open = false" hx-get="{% url 'orders:order_create' %}" hx-target="#main-content"
+                hx-push-url="true"
                 class="w-full bg-white text-black py-4 text-[11px] uppercase font-bold tracking-[0.3em] hover:bg-gray-200 transition-colors disabled:opacity-50">
                 Checkout
             </button>

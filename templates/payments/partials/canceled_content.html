@@ -1,0 +1,21 @@
+<section class="min-h-[80vh] bg-black flex items-center justify-center px-6">
+    <div class="max-w-md w-full text-center space-y-8 animate-in fade-in zoom-in duration-700">
+        <div class="w-20 h-20 border border-white/20 rounded-full flex items-center justify-center mx-auto mb-12">
+            <span class="text-4xl text-white font-light">×</span>
+        </div>
+
+        <h1 class="text-4xl font-light uppercase tracking-[0.4em] text-white">Payment Canceled</h1>
+
+        <p class="text-xs uppercase tracking-widest text-gray-500 leading-relaxed">
+            Your payment session was canceled. Your items are still in your bag if you'd like to try again.
+        </p>
+
+        <div class="pt-8">
+            <a href="{% url 'orders:order_create' %}" hx-get="{% url 'orders:order_create' %}" hx-target="#main-content"
+                hx-push-url="true"
+                class="inline-block border border-gray-800 px-12 py-5 text-[11px] uppercase font-bold tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">
+                Try Again
+            </a>
+        </div>
+    </div>
+</section>

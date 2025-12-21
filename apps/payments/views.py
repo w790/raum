@@ -3,6 +3,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.urls import reverse
 from apps.orders.models import Order
 from .services import NowPaymentsService
 from .models import PaymentTransaction
@@ -11,7 +12,6 @@ import json
 def payment_process(request):
     order_id = request.session.get('order_id')
     order = get_object_or_404(Order, id=order_id)
-    
     payment_service = NowPaymentsService()
     
     scheme = "https" if request.is_secure() else "http"
@@ -21,29 +21,41 @@ def payment_process(request):
     cancel_url = f"{scheme}://{domain}/payments/canceled/"
     ipn_url = f"{scheme}://{domain}/payments/webhook/"
     
-    try:
-        invoice = payment_service.create_invoice(order, success_url, cancel_url, ipn_url)
-        order.payment_id = invoice.get('id')
-        order.save()
-        
-        PaymentTransaction.objects.create(
-            order=order,
-            payment_id=invoice.get('id'),
-            status='created',
-            amount=order.total_price,
-            currency='USD',
-            payload=invoice
-        )
-        
-        return redirect(invoice.get('invoice_url'))
-    except Exception:
-        return redirect('catalog:list')
+    invoice = payment_service.create_invoice(order, success_url, cancel_url, ipn_url)
+    order.payment_id = invoice.get('id')
+    order.save()
+    
+    PaymentTransaction.objects.create(
+        order=order,
+        payment_id=invoice.get('id'),
+        status='created',
+        amount=order.total_price,
+        currency='USD',
+        payload=invoice
+    )
+    
+    return redirect(invoice.get('invoice_url'))
 
 def payment_done(request):
-    return HttpResponse("Payment Successful")
+    is_htmx = request.headers.get('HX-Request')
+    context = {'is_htmx': is_htmx}
+    if is_htmx:
+        return render(request, 'payments/partials/done_content.html', context)
+    return render(request, 'payments/done.html', context)
 
 def payment_canceled(request):
-    return HttpResponse("Payment Canceled")
+    is_htmx = request.headers.get('HX-Request')
+    context = {'is_htmx': is_htmx}
+    if is_htmx:
+        return render(request, 'payments/partials/canceled_content.html', context)
+    return render(request, 'payments/canceled.html', context)
+
+def payment_pending(request):
+    is_htmx = request.headers.get('HX-Request')
+    context = {'is_htmx': is_htmx}
+    if is_htmx:
+        return render(request, 'payments/partials/pending_content.html', context)
+    return render(request, 'payments/pending.html', context)
 
 @csrf_exempt
 @require_POST
