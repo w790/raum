@@ -1,17 +1,22 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.urls import reverse
 from apps.orders.models import Order
+from apps.orders.tasks import send_payment_confirmation_email
 from .services import NowPaymentsService
 from .models import PaymentTransaction
 import json
 
 def payment_process(request):
     order_id = request.session.get('order_id')
-    order = get_object_or_404(Order, id=order_id)
+    user_q = Q(user=request.user) if request.user.is_authenticated else Q(user__isnull=True)
+    session_q = Q(session_key=request.session.session_key)
+    
+    order = get_object_or_404(Order, Q(id=order_id) & (user_q | session_q))
     payment_service = NowPaymentsService()
     
     scheme = "https" if request.is_secure() else "http"
@@ -88,6 +93,7 @@ def payment_webhook(request):
         if payment_status == 'finished':
             order.status = 'paid'
             order.save()
+            send_payment_confirmation_email.delay(order.id)
             return HttpResponse(status=200)
         
         return HttpResponse(status=200)

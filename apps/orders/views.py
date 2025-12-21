@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponse
 from django.views.decorators.http import require_http_methods
 from .services import OrderService
+from .tasks import send_order_creation_email
 
 @require_http_methods(['GET', 'POST'])
 def order_create(request):
@@ -22,6 +23,8 @@ def order_create(request):
         if all(order_data.values()):
             order = order_service.create_order(order_data)
             request.session['order_id'] = order.id
+            
+            send_order_creation_email.delay(order.id)
             
             if is_htmx:
                 response = HttpResponse()

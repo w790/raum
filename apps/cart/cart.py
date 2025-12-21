@@ -47,18 +47,30 @@ class CartService:
         self.session.modified = True
 
     def __iter__(self):
+        product_ids = [item['product_id'] for item in self.cart.values()]
+        products = Product.objects.in_bulk(product_ids)
+        
         for item_key, item_data in self.cart.items():
-            item = item_data.copy()
-            item['price'] = Decimal(item['price'])
-            item['total_price'] = item['price'] * item['quantity']
-            item['key'] = item_key 
-            yield item
+            product = products.get(item_data['product_id'])
+            if product:
+                item = item_data.copy()
+                item['price'] = product.price
+                item['total_price'] = item['price'] * item['quantity']
+                item['key'] = item_key 
+                yield item
 
     def __len__(self):
         return sum(item['quantity'] for item in self.cart.values())
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        product_ids = [item['product_id'] for item in self.cart.values()]
+        products = Product.objects.in_bulk(product_ids)
+        total = Decimal('0.00')
+        for item in self.cart.values():
+            product = products.get(item['product_id'])
+            if product:
+                total += product.price * item['quantity']
+        return total
 
     def clear(self):
         del self.session['cart']

@@ -17,6 +17,7 @@ class OrderService:
             address=order_data.get('address'),
             postal_code=order_data.get('postal_code'),
             city=order_data.get('city'),
+            session_key=self.request.session.session_key,
             total_price=self.cart.get_total_price()
         )
         
