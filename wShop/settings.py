@@ -79,10 +79,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'wShop.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': config('POSTGRES_HOST', 'localhost'),
+        'PORT': config('POSTGRES_PORT', 5432),
+        'USER': config('POSTGRES_USER', 'postgres'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'NAME': config('POSTGRES_DB', 'db01'),
+        'ATOMIC_REQUESTS': True,
     }
 }
 
@@ -113,6 +125,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+STATIC_ROOT = BASE_DIR / 'static_root'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
