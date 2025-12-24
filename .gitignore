@@ -52,3 +52,6 @@ env/
 .gemini/
 
 .mailersend.md
+
+# redis
+*.rdb
