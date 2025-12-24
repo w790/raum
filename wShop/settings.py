@@ -89,11 +89,11 @@ WSGI_APPLICATION = 'wShop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': config('POSTGRES_HOST', 'localhost'),
-        'PORT': config('POSTGRES_PORT', 5432),
-        'USER': config('POSTGRES_USER', 'postgres'),
+        'HOST': config('POSTGRES_HOST'),
+        'PORT': config('POSTGRES_PORT'),
+        'USER': config('POSTGRES_USER'),
         'PASSWORD': config('POSTGRES_PASSWORD'),
-        'NAME': config('POSTGRES_DB', 'db01'),
+        'NAME': config('POSTGRES_DB'),
         'ATOMIC_REQUESTS': True,
     }
 }
