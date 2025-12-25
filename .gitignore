@@ -52,6 +52,9 @@ env/
 .gemini/
 
 .mailersend.md
+HONEYPOT_INSTALL.md
+project_creation_guide.md
 
 # redis
 *.rdb
+
