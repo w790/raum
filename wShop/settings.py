@@ -20,11 +20,16 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
 
-CSRF_TRUSTED_ORIGINS = [
-    f'https://{host.strip()}' for host in config('ALLOWED_HOSTS', default='').split(',') if host.strip()
-]
+CSRF_TRUSTED_ORIGINS = []
+for host in ALLOWED_HOSTS:
+    host = host.strip()
+    if host:
+        CSRF_TRUSTED_ORIGINS.append(f'https://{host}')
+        if DEBUG:
+            CSRF_TRUSTED_ORIGINS.append(f'http://{host}')
+
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 INSTALLED_APPS = [
@@ -171,7 +176,7 @@ DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='no-reply@test-ywj2lpn
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+        "LOCATION": config('REDIS_URL', default='redis://redis:6379/1'),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }

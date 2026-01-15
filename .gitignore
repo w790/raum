@@ -58,3 +58,6 @@ project_creation_guide.md
 # redis
 *.rdb
 
+# Local development overrides
+docker-compose.override.yml
+nginx.local.conf
